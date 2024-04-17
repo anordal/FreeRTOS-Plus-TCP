@@ -86,21 +86,9 @@ void prvTCPReturnPacket_IPV4( FreeRTOS_Socket_t * pxSocket,
                               uint32_t ulLen,
                               BaseType_t xReleaseAfterSend )
 {
-    TCPPacket_t * pxTCPPacket = NULL;
-    ProtocolHeaders_t * pxProtocolHeaders = NULL;
-    IPHeader_t * pxIPHeader = NULL;
     BaseType_t xDoRelease = xReleaseAfterSend;
-    EthernetHeader_t * pxEthernetHeader = NULL;
     NetworkBufferDescriptor_t * pxNetworkBuffer = pxDescriptor;
     NetworkBufferDescriptor_t xTempBuffer;
-    /* memcpy() helper variables for MISRA Rule 21.15 compliance*/
-    MACAddress_t xMACAddress;
-    const void * pvCopySource = NULL;
-    void * pvCopyDest = NULL;
-    const size_t uxIPHeaderSize = ipSIZE_OF_IPv4_HEADER;
-    uint32_t ulDestinationIPAddress;
-    eARPLookupResult_t eResult;
-    NetworkEndPoint_t * pxEndPoint = NULL;
 
     do
     {
@@ -145,6 +133,18 @@ void prvTCPReturnPacket_IPV4( FreeRTOS_Socket_t * pxSocket,
             if( pxNetworkBuffer != NULL ) /* LCOV_EXCL_BR_LINE the 2nd branch will never be reached */
         #endif
         {
+            TCPPacket_t * pxTCPPacket = NULL;
+            ProtocolHeaders_t * pxProtocolHeaders = NULL;
+            IPHeader_t * pxIPHeader;
+            EthernetHeader_t * pxEthernetHeader = NULL;
+            /* memcpy() helper variables for MISRA Rule 21.15 compliance*/
+            MACAddress_t xMACAddress;
+            const void * pvCopySource = NULL;
+            void * pvCopyDest = NULL;
+            const size_t uxIPHeaderSize = ipSIZE_OF_IPv4_HEADER;
+            uint32_t ulDestinationIPAddress;
+            eARPLookupResult_t eResult;
+            NetworkEndPoint_t * pxEndPoint = NULL;
             NetworkInterface_t * pxInterface;
 
             /* MISRA Ref 11.3.1 [Misaligned access] */

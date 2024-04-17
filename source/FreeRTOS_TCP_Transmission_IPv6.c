@@ -87,19 +87,9 @@ void prvTCPReturnPacket_IPV6( FreeRTOS_Socket_t * pxSocket,
                               uint32_t ulLen,
                               BaseType_t xReleaseAfterSend )
 {
-    TCPPacket_IPv6_t * pxTCPPacket = NULL;
-    ProtocolHeaders_t * pxProtocolHeaders = NULL;
-    IPHeader_IPv6_t * pxIPHeader = NULL;
     BaseType_t xDoRelease = xReleaseAfterSend;
-    EthernetHeader_t * pxEthernetHeader = NULL;
     NetworkBufferDescriptor_t * pxNetworkBuffer = pxDescriptor;
     NetworkBufferDescriptor_t xTempBuffer;
-    /* memcpy() helper variables for MISRA Rule 21.15 compliance*/
-    MACAddress_t xMACAddress;
-    const void * pvCopySource = NULL;
-    void * pvCopyDest = NULL;
-    const size_t uxIPHeaderSize = ipSIZE_OF_IPv6_HEADER;
-    IPv6_Address_t xDestinationIPAddress;
 
     do
     {
@@ -151,6 +141,16 @@ void prvTCPReturnPacket_IPV6( FreeRTOS_Socket_t * pxSocket,
             if( pxNetworkBuffer != NULL ) /* LCOV_EXCL_BR_LINE the 2nd branch will never be reached */
         #endif
         {
+            TCPPacket_IPv6_t * pxTCPPacket = NULL;
+            ProtocolHeaders_t * pxProtocolHeaders = NULL;
+            IPHeader_IPv6_t * pxIPHeader;
+            EthernetHeader_t * pxEthernetHeader = NULL;
+            /* memcpy() helper variables for MISRA Rule 21.15 compliance*/
+            MACAddress_t xMACAddress;
+            const void * pvCopySource = NULL;
+            void * pvCopyDest = NULL;
+            const size_t uxIPHeaderSize = ipSIZE_OF_IPv6_HEADER;
+            IPv6_Address_t xDestinationIPAddress;
             eARPLookupResult_t eResult;
             NetworkInterface_t * pxInterface;
 
